@@ -1,0 +1,14 @@
+// Start w/ "go run main.go"
+
+
+Stand 24. Mai 2022
+_________________________
+* Code in verschiedene Files unterteilt
+    * alles Game spezifische in Game File
+    * Position in Position File
+    * Main hat nur das Nötigste
+
+Snake Spieler zwei erstellt und kann sich bewegen
+    * Kollisionen für P2 fehlen
+    * Schöneres implementieren von P2 fehlt
+        * Impl ist bisher quick&dirty :)
