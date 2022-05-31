@@ -12,3 +12,11 @@ Snake Spieler zwei erstellt und kann sich bewegen
     * Kollisionen für P2 fehlen
     * Schöneres implementieren von P2 fehlt
         * Impl ist bisher quick&dirty :)
+
+Stand 31. Mai 2022
+_________________________
+* Kollisionen für Player 2 integriert:
+    * Wall
+    * Apple
+    * Itself
+* Kollision von Snake to Snake ist WIP
