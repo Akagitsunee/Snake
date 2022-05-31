@@ -44,21 +44,40 @@ func (g *Game) collidesWithApple(snakeBody []Position) bool {
 		snakeBody[0].Y == g.Apple.Y
 }
 
-func (g *Game) collidesWithSelf(snakeBody []Position) bool {
-	for _, v := range snakeBody[1:] {
-		if snakeBody[0].X == v.X &&
-			snakeBody[0].Y == v.Y {
+func (g *Game) collidesWithSelf(snakeBody *[]Position) bool {
+	for _, v := range (*snakeBody)[1:] {
+		if (*snakeBody)[0].X == v.X &&
+			(*snakeBody)[0].Y == v.Y {
 			return true
 		}
 	}
 	return false
 }
 
-func (g *Game) collidesWithWall() bool {
-	return g.SnakeBodyP1[0].X < 0 ||
-		g.SnakeBodyP1[0].Y < 0 ||
-		g.SnakeBodyP1[0].X >= XNumInScreen ||
-		g.SnakeBodyP1[0].Y >= YNumInScreen
+func (g *Game) collidesWithWall(snakeBody *[]Position) bool {
+	return (*snakeBody)[0].X < 0 ||
+		(*snakeBody)[0].Y < 0 ||
+		(*snakeBody)[0].X >= XNumInScreen ||
+		(*snakeBody)[0].Y >= YNumInScreen
+}
+
+func (g *Game) collidesWithOtherSnake(snakeBody *[]Position) bool {
+	if snakeBody == &g.SnakeBodyP1 {
+		return g.loopTroughSnakeBody(snakeBody, &g.SnakeBodyP2)
+	} else if snakeBody == &g.SnakeBodyP2 {
+		return g.loopTroughSnakeBody(snakeBody, &g.SnakeBodyP1)
+	}
+	return false
+}
+
+func (g *Game) loopTroughSnakeBody(snakeBodyCollide *[]Position, snakeBodyCollided *[]Position) bool {
+	for _, v := range g.SnakeBodyP2 {
+		if g.SnakeBodyP2[0].X == v.X &&
+			g.SnakeBodyP2[0].Y == v.Y {
+			return true
+		}
+	}
+	return false
 }
 
 func (g *Game) needsToMoveSnake() bool {
@@ -119,13 +138,13 @@ func (g *Game) Update() error {
 	}
 
 	if g.needsToMoveSnake() {
-		if g.collidesWithWall() || g.collidesWithSelf(g.SnakeBodyP1) {
+		if g.collidesWithWall(&g.SnakeBodyP1) || g.collidesWithWall(&g.SnakeBodyP2) || g.collidesWithSelf(&g.SnakeBodyP1) || g.collidesWithSelf(&g.SnakeBodyP2) {
 			g.reset()
 		}
 
 		if g.collidesWithApple(g.SnakeBodyP1) {
 			g.eatApple(&g.SnakeBodyP1)
-		} else if g.collidesWithApple(g.SnakeBodyP1) {
+		} else if g.collidesWithApple(g.SnakeBodyP2) {
 			g.eatApple(&g.SnakeBodyP2)
 		}
 
