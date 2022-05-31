@@ -39,15 +39,15 @@ const (
 	dirUp
 )
 
-func (g *Game) collidesWithApple() bool {
-	return g.SnakeBodyP1[0].X == g.Apple.X &&
-		g.SnakeBodyP1[0].Y == g.Apple.Y
+func (g *Game) collidesWithApple(snakeBody []Position) bool {
+	return snakeBody[0].X == g.Apple.X &&
+		snakeBody[0].Y == g.Apple.Y
 }
 
-func (g *Game) collidesWithSelf() bool {
-	for _, v := range g.SnakeBodyP1[1:] {
-		if g.SnakeBodyP1[0].X == v.X &&
-			g.SnakeBodyP1[0].Y == v.Y {
+func (g *Game) collidesWithSelf(snakeBody []Position) bool {
+	for _, v := range snakeBody[1:] {
+		if snakeBody[0].X == v.X &&
+			snakeBody[0].Y == v.Y {
 			return true
 		}
 	}
@@ -119,30 +119,14 @@ func (g *Game) Update() error {
 	}
 
 	if g.needsToMoveSnake() {
-		if g.collidesWithWall() || g.collidesWithSelf() {
+		if g.collidesWithWall() || g.collidesWithSelf(g.SnakeBodyP1) {
 			g.reset()
 		}
 
-		if g.collidesWithApple() {
-			g.Apple.X = rand.Intn(XNumInScreen - 1)
-			g.Apple.Y = rand.Intn(YNumInScreen - 1)
-			g.SnakeBodyP1 = append(g.SnakeBodyP1, Position{
-				X: g.SnakeBodyP1[len(g.SnakeBodyP1)-1].X,
-				Y: g.SnakeBodyP1[len(g.SnakeBodyP1)-1].Y,
-			})
-			if len(g.SnakeBodyP1) > 10 && len(g.SnakeBodyP1) < 20 {
-				g.Level = 2
-				g.MoveTime = 3
-			} else if len(g.SnakeBodyP1) > 20 {
-				g.Level = 3
-				g.MoveTime = 2
-			} else {
-				g.Level = 1
-			}
-			g.Score++
-			if g.BestScore < g.Score {
-				g.BestScore = g.Score
-			}
+		if g.collidesWithApple(g.SnakeBodyP1) {
+			g.eatApple(&g.SnakeBodyP1)
+		} else if g.collidesWithApple(g.SnakeBodyP1) {
+			g.eatApple(&g.SnakeBodyP2)
 		}
 
 		for i := int64(len(g.SnakeBodyP1)) - 1; i > 0; i-- {
@@ -179,6 +163,28 @@ func (g *Game) Update() error {
 	g.Timer++
 
 	return nil
+}
+
+func (g *Game) eatApple(snakeBody *[]Position) {
+	g.Apple.X = rand.Intn(XNumInScreen - 1)
+	g.Apple.Y = rand.Intn(YNumInScreen - 1)
+	*snakeBody = append(*snakeBody, Position{
+		X: (*snakeBody)[len(*snakeBody)-1].X,
+		Y: (*snakeBody)[len(*snakeBody)-1].Y,
+	})
+	if len(*snakeBody) > 10 && len(*snakeBody) < 20 {
+		g.Level = 2
+		g.MoveTime = 3
+	} else if len(*snakeBody) > 20 {
+		g.Level = 3
+		g.MoveTime = 2
+	} else {
+		g.Level = 1
+	}
+	g.Score++
+	if g.BestScore < g.Score {
+		g.BestScore = g.Score
+	}
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
