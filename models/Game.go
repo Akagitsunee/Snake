@@ -54,11 +54,20 @@ func (g *Game) collidesWithSelf(snakeBody []Position) bool {
 	return false
 }
 
-func (g *Game) collidesWithWall() bool {
-	return g.SnakeBodyP1[0].X < 0 ||
-		g.SnakeBodyP1[0].Y < 0 ||
-		g.SnakeBodyP1[0].X >= XNumInScreen ||
-		g.SnakeBodyP1[0].Y >= YNumInScreen
+func (g *Game) collidesWithOtherSnake(snakeBody []Position) bool {
+	for _, v := range snakeBody[0:] {
+		if g.SnakeBodyP1[0].X == v.X && g.SnakeBodyP2[0].X == v.X && g.SnakeBodyP1[0].Y == v.Y && g.SnakeBodyP2[0].Y == v.Y {
+			return true
+		}
+	}
+	return false
+}
+
+func (g *Game) collidesWithWall(snakeBody []Position) bool {
+	return snakeBody[0].X < 0 ||
+		snakeBody[0].Y < 0 ||
+		snakeBody[0].X >= XNumInScreen ||
+		snakeBody[0].Y >= YNumInScreen
 }
 
 func (g *Game) needsToMoveSnake() bool {
@@ -68,7 +77,7 @@ func (g *Game) needsToMoveSnake() bool {
 func (g *Game) reset() {
 	g.Apple.X = 3 * GridSize
 	g.Apple.Y = 3 * GridSize
-	g.MoveTime = 4
+	g.MoveTime = 10
 	g.SnakeBodyP1 = g.SnakeBodyP1[:1]
 	g.SnakeBodyP1[0].X = XNumInScreen / 2
 	g.SnakeBodyP1[0].Y = YNumInScreen / 2
@@ -119,13 +128,13 @@ func (g *Game) Update() error {
 	}
 
 	if g.needsToMoveSnake() {
-		if g.collidesWithWall() || g.collidesWithSelf(g.SnakeBodyP1) {
+		if g.collidesWithWall(g.SnakeBodyP1) || g.collidesWithWall(g.SnakeBodyP2) || g.collidesWithSelf(g.SnakeBodyP1) || g.collidesWithSelf(g.SnakeBodyP2) || g.collidesWithOtherSnake(g.SnakeBodyP1) {
 			g.reset()
 		}
 
 		if g.collidesWithApple(g.SnakeBodyP1) {
 			g.eatApple(&g.SnakeBodyP1)
-		} else if g.collidesWithApple(g.SnakeBodyP1) {
+		} else if g.collidesWithApple(g.SnakeBodyP2) {
 			g.eatApple(&g.SnakeBodyP2)
 		}
 
@@ -174,10 +183,10 @@ func (g *Game) eatApple(snakeBody *[]Position) {
 	})
 	if len(*snakeBody) > 10 && len(*snakeBody) < 20 {
 		g.Level = 2
-		g.MoveTime = 3
+		g.MoveTime = 10
 	} else if len(*snakeBody) > 20 {
 		g.Level = 3
-		g.MoveTime = 2
+		g.MoveTime = 10
 	} else {
 		g.Level = 1
 	}
