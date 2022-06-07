@@ -71,9 +71,9 @@ func (g *Game) collidesWithOtherSnake(snakeBody *[]Position) bool {
 }
 
 func (g *Game) loopTroughSnakeBody(snakeBodyCollide *[]Position, snakeBodyCollided *[]Position) bool {
-	for _, v := range g.SnakeBodyP2 {
-		if g.SnakeBodyP2[0].X == v.X &&
-			g.SnakeBodyP2[0].Y == v.Y {
+	for _, v := range *snakeBodyCollided {
+		if (*snakeBodyCollide)[0].X == v.X &&
+			(*snakeBodyCollide)[0].Y == v.Y {
 			return true
 		}
 	}
@@ -138,12 +138,12 @@ func (g *Game) Update() error {
 	}
 
 	if g.needsToMoveSnake() {
-		if g.collidesWithWall(&g.SnakeBodyP1) || g.collidesWithWall(&g.SnakeBodyP2) || g.collidesWithSelf(&g.SnakeBodyP1) || g.collidesWithSelf(&g.SnakeBodyP2) {
+		if g.collidesWithWall(&g.SnakeBodyP1) || g.collidesWithWall(&g.SnakeBodyP2) || g.collidesWithSelf(&g.SnakeBodyP1) || g.collidesWithSelf(&g.SnakeBodyP2) || g.collidesWithOtherSnake(&g.SnakeBodyP1) || g.collidesWithOtherSnake(&g.SnakeBodyP2) {
 			g.reset()
 		}
 
 		if g.collidesWithApple(g.SnakeBodyP1) {
-			g.eatApple(&g.SnakeBodyP1)
+			go g.eatApple(&g.SnakeBodyP1)
 		} else if g.collidesWithApple(g.SnakeBodyP2) {
 			g.eatApple(&g.SnakeBodyP2)
 		}
@@ -208,7 +208,7 @@ func (g *Game) eatApple(snakeBody *[]Position) {
 
 func (g *Game) Draw(screen *ebiten.Image) {
 	for _, v := range g.SnakeBodyP1 {
-		ebitenutil.DrawRect(screen, float64(v.X*GridSize), float64(v.Y*GridSize), GridSize, GridSize, color.RGBA{0x80, 0xa0, 0xc0, 0xff})
+		go ebitenutil.DrawRect(screen, float64(v.X*GridSize), float64(v.Y*GridSize), GridSize, GridSize, color.RGBA{0x80, 0xa0, 0xc0, 0xff})
 	}
 	ebitenutil.DrawRect(screen, float64(g.Apple.X*GridSize), float64(g.Apple.Y*GridSize), GridSize, GridSize, color.RGBA{0xFF, 0x00, 0x00, 0xff})
 
@@ -219,7 +219,7 @@ func (g *Game) Draw(screen *ebiten.Image) {
 	}
 
 	for _, v := range g.SnakeBodyP2 {
-		ebitenutil.DrawRect(screen, float64(v.X*GridSize), float64(v.Y*GridSize), GridSize, GridSize, color.RGBA{0x80, 0xa0, 0xc0, 0xff})
+		go ebitenutil.DrawRect(screen, float64(v.X*GridSize), float64(v.Y*GridSize), GridSize, GridSize, color.RGBA{0x80, 0xa0, 0xc0, 0xff})
 	}
 }
 

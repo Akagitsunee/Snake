@@ -20,3 +20,8 @@ _________________________
     * Apple
     * Itself
 * Kollision von Snake to Snake ist WIP
+
+Stand 7. Juni 2022
+_________________________
+* Kollision von Snake to Snake implementiert
+* Erste Überlegungen Go-Routines
