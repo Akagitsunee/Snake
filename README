@@ -25,3 +25,8 @@ Stand 7. Juni 2022
 _________________________
 * Kollision von Snake to Snake implementiert
 * Erste Überlegungen Go-Routines
+
+Stand 14. Juni 2022
+_________________________
+* Snake Logik extrahieren und in Goroutines stecken
+* Testing mit Ticks per Minutes / Frames per minute
