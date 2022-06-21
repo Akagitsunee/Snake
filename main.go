@@ -14,15 +14,15 @@ func init() {
 
 func newGame() *models.Game {
 	g := &models.Game{
-		Apple:       models.Position{X: 3 * models.GridSize, Y: 3 * models.GridSize},
+		Apple:       models.Position{X: models.XNumInScreen / 2, Y: models.YNumInScreen/2 + 10},
 		MoveTime:    4,
 		SnakeBodyP1: make([]models.Position, 1),
 		SnakeBodyP2: make([]models.Position, 1),
 	}
-	g.SnakeBodyP1[0].X = models.XNumInScreen / 2
+	g.SnakeBodyP1[0].X = models.XNumInScreen/2 + 10
 	g.SnakeBodyP1[0].Y = models.YNumInScreen / 2
-	g.SnakeBodyP2[0].X = models.XNumInScreen / 3
-	g.SnakeBodyP2[0].Y = models.YNumInScreen / 3
+	g.SnakeBodyP2[0].X = models.XNumInScreen/2 - 10
+	g.SnakeBodyP2[0].Y = models.YNumInScreen / 2
 	return g
 }
 

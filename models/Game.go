@@ -84,15 +84,15 @@ func (g *Game) needsToMoveSnake() bool {
 }
 
 func (g *Game) reset() {
-	g.Apple.X = 3 * GridSize
-	g.Apple.Y = 3 * GridSize
+	g.Apple.X = XNumInScreen / 2
+	g.Apple.Y = YNumInScreen/2 + 10
 	g.MoveTime = 4
 	g.SnakeBodyP1 = g.SnakeBodyP1[:1]
-	g.SnakeBodyP1[0].X = XNumInScreen / 2
+	g.SnakeBodyP1[0].X = XNumInScreen/2 + 10
 	g.SnakeBodyP1[0].Y = YNumInScreen / 2
 	g.SnakeBodyP2 = g.SnakeBodyP2[:1]
-	g.SnakeBodyP2[0].X = XNumInScreen / 3
-	g.SnakeBodyP2[0].Y = YNumInScreen / 3
+	g.SnakeBodyP2[0].X = XNumInScreen/2 - 10
+	g.SnakeBodyP2[0].Y = YNumInScreen / 2
 	g.Score = 0
 	g.Level = 1
 	g.MoveDirectionP1 = dirNone
